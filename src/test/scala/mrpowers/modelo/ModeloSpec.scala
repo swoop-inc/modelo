@@ -19,6 +19,17 @@ class ModeloSpec extends FunSpec with Matchers with SparkSessionTestWrapper with
       mustache(template, Map("viewName" -> "cool_view", "minAge" -> 30)) should be(expected)
     }
 
+    it("can render a template with a partial") {
+      val path = os.pwd/"src"/"test"/"resources"/"base.mustache"
+      val res = mustache(path, Map("names" -> List(Map("name"-> "Marcela"), Map("name" -> "Luisa"))))
+      val expected =
+        """<h2>Names</h2>
+          |<strong>Marcela</strong>
+          |<strong>Luisa</strong>
+          |""".stripMargin
+      res should be(expected)
+    }
+
     it("works seamlessly with Spark") {
       import spark.implicits._
       val df = Seq(

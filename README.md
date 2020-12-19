@@ -8,6 +8,8 @@ Sometimes it's easier to express complex logic with pure SQL.  Mustache template
 
 `"select * from my_table where first_name = {{{firstName}}}"` is an example of a Mustache template.  `firstName` is a parameter that can be dynamically passed to the template. 
 
+Templates are also great for business users that are comfortable writing pure SQL, but don't want to use the Scala API.  Templates let these users update queries by modifying parameter maps instead of directly modifying SQL strings.
+
 ## Simple example
 
 Let's create a DataFrame to demonstrate how to use this lib:
@@ -45,6 +47,10 @@ res.show()
 |  federica| 78|
 +----------+---+
 ```
+
+## Databricks notebook example
+
+Add some pretty pictures with a complicated query to show the power of this design pattern
 
 ## Running a template in a transformation chain
 
@@ -88,6 +94,5 @@ res.show()
 +----------+---+--------+
 ```
 
-## Databricks notebook example
+This is a simplistic example, so a Mustache template wouldn't really be needed in this case.  Templates are more applicable for complex logic or for users that don't want to interact with the Scala API.
 
-Add some pretty pictures with a complicated query to show the power of this design pattern

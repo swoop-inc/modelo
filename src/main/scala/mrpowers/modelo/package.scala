@@ -14,7 +14,7 @@ package object modelo {
   def mustache(template: String, attrs: Map[String, Any]): String = {
     // this is a ridiculous hack to get Scalate to work with a custom template: https://scalate.github.io/scalate/documentation/scalate-embedding-guide.html#custom_template_loading
     // the hack is only partially explained in the docs
-    // also, why don't the docs give a real solution instead of a hack?
+    // also, why don't the lib give a real solution instead of a hack?
     val engine = new TemplateEngine
     // the mustache extension is important here or else Scalate errors out
     val templates = Map("someFakeTemplateName.mustache" -> template)
