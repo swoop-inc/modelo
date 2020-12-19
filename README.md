@@ -54,7 +54,45 @@ Add some pretty pictures with a complicated query to show the power of this desi
 
 ## Leveraging a partial
 
-ADD description on this powerful paradigm
+This section demonstrates how to render SQL templates with partials.
+
+Suppose you have the following data view:
+
+```scala
+import spark.implicits._
+val df = Seq(
+  ("crosby", 1987, true),
+  ("gretzky", 1961, false),
+  ("jagr", 1972, false),
+  ("mcdavid", 1997, true)
+).toDF("player", "birth_year", "is_active")
+df.createOrReplaceTempView("hockey_players")
+```
+
+Here's how you can get the age of all the active players with a base template and a partial template:
+
+```scala
+val ageCalculator = "year(current_date()) - birth_year as age"
+val baseTemplate = "select {{> ageCalculator}} from {{{viewName}}} where is_active = {{{isActive}}}"
+val templates = Map("baseTemplate.mustache" -> baseTemplate, "ageCalculator.mustache" -> ageCalculator)
+val attrs = Map("viewName" -> "hockey_players", "isActive" -> true)
+val res = spark.sql(mustache(templates, "baseTemplate.mustache", attrs))
+```
+
+Let's take a look at the results:
+
+```
+res.show()
+
++---+
+|age|
++---+
+| 33|
+| 23|
++---+
+```
+
+Partials are a great way to create DRY templates.  You can abstract complex logic to partials and reuse it in multiple places.
 
 ## Running a template in a transformation chain
 

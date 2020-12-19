@@ -67,6 +67,24 @@ class ModeloSpec extends FunSpec with Matchers with SparkSessionTestWrapper with
       assertSmallDataFrameEquality(res, expected)
     }
 
+    it("shows how to use a partial in a Spark related query") {
+      import spark.implicits._
+      val df = Seq(
+        ("crosby", 1987, true),
+        ("gretzky", 1961, false),
+        ("jagr", 1972, false),
+        ("mcdavid", 1997, true)
+      ).toDF("player", "birth_year", "is_active")
+      df.createOrReplaceTempView("hockey_players")
+      val ageCalculator = "year(current_date()) - birth_year as age"
+      val baseTemplate = "select {{> ageCalculator}} from {{{viewName}}} where is_active = {{{isActive}}}"
+      val templates = Map("baseTemplate.mustache" -> baseTemplate, "ageCalculator.mustache" -> ageCalculator)
+      val attrs = Map("viewName" -> "hockey_players", "isActive" -> true)
+      val res = spark.sql(mustache(templates, "baseTemplate.mustache", attrs))
+      // intentionally not putting an assertion here cause it'll break when the year changes
+      res.show()
+    }
+
     it("demonstrates how to chain with other custom transformations") {
       import spark.implicits._
       val dogs = Seq(
