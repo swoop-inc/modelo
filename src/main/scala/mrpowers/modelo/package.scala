@@ -6,6 +6,8 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 
 package object modelo {
 
+  // when dealing with templates stored in files, we don't need to worry about "registering templates"
+  // crazy template registration hacks are only needed when dealing with template strings
   def mustache(templatePath: os.Path, attrs: Map[String, Any]): String = {
     val engine = new TemplateEngine
     engine.layout(templatePath.toString(), attrs)
@@ -16,21 +18,14 @@ package object modelo {
   // the concept of "registering a template" should be completely unnecessary here
   // Scalate should provide a method like render(template, attrs, "mustache")
   def mustache(template: String, attrs: Map[String, Any], templateName: String = "someFakeTemplateName.mustache"): String = {
-    // this is a ridiculous hack to get Scalate to work with a custom template: https://scalate.github.io/scalate/documentation/scalate-embedding-guide.html#custom_template_loading
-    // the hack is only partially explained in the docs
-    // also, why don't the lib give a real solution instead of a hack?
-    val engine = new TemplateEngine
-    // the mustache extension is important here or else Scalate errors out
-    val templates = Map(templateName -> template)
-    engine.resourceLoader = new FileResourceLoader {
-      override def resource(uri: String): Option[Resource] =
-        Some(Resource.fromText(uri, templates(uri)))
-    }
-    engine.layout(templateName, attrs)
+    mustache(Map(templateName -> template), templateName, attrs)
   }
 
   // You need to register multiple templates if you'd like to render partials
   def mustache(templates: Map[String, String], baseTemplateName: String, attrs: Map[String, Any]): String = {
+    // this is a ridiculous hack to get Scalate to work with a custom template: https://scalate.github.io/scalate/documentation/scalate-embedding-guide.html#custom_template_loading
+    // the hack is only partially explained in the docs
+    // also, why don't the lib give a real solution instead of a hack?
     val engine = new TemplateEngine
     engine.resourceLoader = new FileResourceLoader {
       override def resource(uri: String): Option[Resource] = {
