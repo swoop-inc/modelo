@@ -1,8 +1,12 @@
 # modelo
 
-Modelo makes it easy to run Spark queries powered by templates.
+Modelo makes it easy to run Spark queries powered by templates.  "Modelo" means template in Spanish.
 
-"Modelo" means template in Spanish.
+It's typically best to write Spark logic via custom transformations with the Scala API.
+
+Sometimes it's easier to express complex logic with pure SQL.  Mustache templates are more powerful than raw SQL strings because you can pass parameters to a template.
+
+`"select * from my_table where first_name = {{{firstName}}}"` is an example of a Mustache template.  `firstName` is a parameter that can be dynamically passed to the template. 
 
 ## Simple example
 
@@ -46,6 +50,8 @@ res.show()
 
 Let's see how to run a Mustache template in a chain of DataFrame transformations.
 
+Let's create some fake data with information on dogs.
+
 ```scala
 import spark.implicits._
 val dogs = Seq(
@@ -54,6 +60,11 @@ val dogs = Seq(
   ("spot", 5),
   ("luna", 13)
 ).toDF("first_name", "age")
+```
+
+Use the Scala API to add an `is_adult` column to the DataFrame.  Then use a Mustache template to filter out all the rows when `is_adult` is false.
+
+```scala
 val template = "select * from {{{viewName}}} where is_adult = {{{isAdult}}}"
 val attrs = Map("viewName" -> "some_dogs", "isAdult" -> true)
 val res = dogs
