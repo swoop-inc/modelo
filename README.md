@@ -52,6 +52,10 @@ res.show()
 
 Add some pretty pictures with a complicated query to show the power of this design pattern
 
+## Leveraging a partial
+
+ADD description on this powerful paradigm
+
 ## Running a template in a transformation chain
 
 Let's see how to run a Mustache template in a chain of DataFrame transformations.
