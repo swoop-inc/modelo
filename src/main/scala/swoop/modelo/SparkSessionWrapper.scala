@@ -1,12 +1,10 @@
-package mrpowers.modelo
+package swoop.modelo
 
 import org.apache.spark.sql.SparkSession
-import org.apache.log4j.{Logger, Level}
 
-trait SparkSessionTestWrapper {
+trait SparkSessionWrapper extends Serializable {
 
   lazy val spark: SparkSession = {
-    Logger.getLogger("org").setLevel(Level.OFF)
     SparkSession.builder().master("local").appName("spark session").getOrCreate()
   }
 

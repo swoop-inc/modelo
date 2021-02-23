@@ -7,11 +7,11 @@ scalaVersion := "2.11.12"
 libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.4.7" % "provided"
 
 libraryDependencies += "com.github.mrpowers" %% "spark-daria" % "0.38.2"
-libraryDependencies += "com.github.mrpowers" %% "spark-fast-tests" % "0.21.3" % "test"
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 libraryDependencies += "org.scalatra.scalate" %% "scalate-core" % "1.9.6"
 libraryDependencies += "com.lihaoyi" %% "os-lib" % "0.2.9"
 
+libraryDependencies += "com.github.mrpowers" %% "spark-fast-tests" % "0.21.3" % "test"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 
 // test suite settings
 fork in Test := true

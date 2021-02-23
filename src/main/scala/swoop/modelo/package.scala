@@ -1,4 +1,4 @@
-package mrpowers
+package swoop
 
 import org.fusesource.scalate.TemplateEngine
 import org.fusesource.scalate.util.{FileResourceLoader, Resource}

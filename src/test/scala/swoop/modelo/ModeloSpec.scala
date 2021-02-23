@@ -1,4 +1,4 @@
-package mrpowers.modelo
+package swoop.modelo
 
 import com.github.mrpowers.spark.fast.tests.DataFrameComparer
 import org.scalatest.{FunSpec, Matchers}
