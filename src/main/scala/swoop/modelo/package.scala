@@ -23,9 +23,7 @@ package object modelo {
 
   // You need to register multiple templates if you'd like to render partials
   def mustache(templates: Map[String, String], baseTemplateName: String, attrs: Map[String, Any]): String = {
-    // this is a ridiculous hack to get Scalate to work with a custom template: https://scalate.github.io/scalate/documentation/scalate-embedding-guide.html#custom_template_loading
-    // the hack is only partially explained in the docs
-    // also, why don't the lib give a real solution instead of a hack?
+    // this is a hack to get Scalate to work with a custom template: https://scalate.github.io/scalate/documentation/scalate-embedding-guide.html#custom_template_loading
     val engine = new TemplateEngine
     engine.resourceLoader = new FileResourceLoader {
       override def resource(uri: String): Option[Resource] = {
@@ -36,8 +34,7 @@ package object modelo {
   }
 
   def mustacheTransform(template: String, attrs: Map[String, Any])(df: DataFrame): DataFrame = {
-    // @todo remove this spark hack and figure out a better way to access the SparkSession
-    val spark = SparkSession.builder.getOrCreate()
+    val spark = df.sparkSession
     spark.sql(mustache(template, attrs))
   }
 

@@ -1,3 +1,5 @@
+organization := "com.swoop"
+
 name := "modelo"
 
 version := "0.0.1"
@@ -19,10 +21,18 @@ javaOptions ++= Seq("-Xms512M", "-Xmx2048M", "-XX:MaxPermSize=2048M", "-XX:+CMSC
 // Show runtime of tests
 testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-oD")
 
-// JAR file settings
+credentials += Credentials(Path.userHome / ".sbt" / "sonatype_credentials")
+licenses := Seq("MIT" -> url("http://opensource.org/licenses/MIT"))
+homepage := Some(url("https://github.com/swoop-inc/modelo"))
+developers ++= List(
+  Developer("MrPowers", "Matthew Powers", "@MrPowers", url("https://github.com/MrPowers"))
+)
+scmInfo := Some(ScmInfo(url("https://github.com/swoop-inc/modelo"), "git@github.com:swoop-inc/modelo.git"))
 
-// don't include Scala in the JAR file
-//assemblyOption in assembly := (assemblyOption in assembly).value.copy(includeScala = false)
+updateOptions := updateOptions.value.withLatestSnapshots(false)
 
-// Add the JAR file naming conventions described here: https://github.com/MrPowers/spark-style-guide#jar-files
-// You can add the JAR file naming conventions by running the shell script
+publishMavenStyle := true
+
+publishTo := sonatypePublishToBundle.value
+
+Global/useGpgPinentry := true
