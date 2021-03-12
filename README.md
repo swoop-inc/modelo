@@ -138,3 +138,23 @@ res.show()
 
 This is a simplistic example, so a Mustache template wouldn't really be needed in this case.  Templates are more applicable for complex logic or for users that don't want to interact with the Scala API.
 
+## Publishing
+
+1. Version bump commit and create GitHub tag
+
+2. Publish JAR
+
+Run `sbt` to open the SBT console.
+
+Run `> ; + publishSigned; sonatypeBundleRelease` to create the JAR files and release them to Maven.  These commands are made available by the [sbt-sonatype](https://github.com/xerial/sbt-sonatype) plugin.
+
+When the release command is run, you'll be prompted to enter your GPG passphrase.
+
+The Sonatype credentials should be stored in the `~/.sbt/sonatype_credentials` file in this format:
+
+```
+realm=Sonatype Nexus Repository Manager
+host=oss.sonatype.org
+user=$USERNAME
+password=$PASSWORD
+``
