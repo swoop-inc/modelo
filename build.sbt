@@ -4,9 +4,9 @@ name := "modelo"
 
 version := "0.0.1"
 
-scalaVersion := "2.11.12"
+scalaVersion := "2.12.12"
 
-libraryDependencies += "org.apache.spark" %% "spark-sql" % "2.4.7" % "provided"
+libraryDependencies += "org.apache.spark" %% "spark-sql" % "3.0.1" % "provided"
 
 libraryDependencies += "com.github.mrpowers" %% "spark-daria" % "0.38.2"
 libraryDependencies += "org.scalatra.scalate" %% "scalate-core" % "1.9.6"
