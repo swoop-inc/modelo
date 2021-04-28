@@ -8,7 +8,7 @@ class ModeloSpec extends FunSpec with Matchers with SparkSessionTestWrapper with
   describe("mustache") {
 
     it("generates a string from a template file") {
-      val path = os.pwd/"src"/"test"/"resources"/"template1.mustache"
+      val path = os.pwd / "src" / "test" / "resources" / "template1.mustache"
       val expected = "select * from cool_view where age > 30"
       mustache(path, Map("viewName" -> "cool_view", "minAge" -> 30)) should be(expected)
     }
@@ -20,8 +20,8 @@ class ModeloSpec extends FunSpec with Matchers with SparkSessionTestWrapper with
     }
 
     it("can render a template with a partial for files") {
-      val path = os.pwd/"src"/"test"/"resources"/"base.mustache"
-      val res = mustache(path, Map("names" -> List(Map("name"-> "Marcela"), Map("name" -> "Luisa"))))
+      val path = os.pwd / "src" / "test" / "resources" / "base.mustache"
+      val res = mustache(path, Map("names" -> List(Map("name" -> "Marcela"), Map("name" -> "Luisa"))))
       val expected =
         """<h2>Names</h2>
           |<strong>Marcela</strong>
@@ -37,8 +37,8 @@ class ModeloSpec extends FunSpec with Matchers with SparkSessionTestWrapper with
                            |{{/names}}
                            |""".stripMargin
       val templatePartial = "<strong>{{name}}</strong>"
-      val templates = Map("base.mustache" -> templateBase, "user.mustache"-> templatePartial)
-      val attrs =Map("names" -> List(Map("name"-> "Marcela"), Map("name" -> "Luisa")))
+      val templates = Map("base.mustache" -> templateBase, "user.mustache" -> templatePartial)
+      val attrs = Map("names" -> List(Map("name" -> "Marcela"), Map("name" -> "Luisa")))
       val res = mustache(templates, "base.mustache", attrs)
       val expected =
         """<h2>Names</h2>

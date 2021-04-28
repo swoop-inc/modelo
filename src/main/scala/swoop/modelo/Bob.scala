@@ -1,13 +1,15 @@
 package swoop.modelo
 
 import scala.language.dynamics
-
-case class ModeloBobException(smth: String) extends Exception(smth)
+import org.apache.spark.sql.{DataFrame, SparkSession}
 
 case class Bob(
+    templates: Map[String, String],
+    baseTemplateName: String,
     inputParams: Map[String, List[String]] = Map.empty[String, List[String]],
     required: Set[String] = Set.empty[String],
-    requireAtLeastOne: Set[String] = Set.empty[String]
+    requireAtLeastOne: Set[String] = Set.empty[String],
+    paramConverters: Map[String, List[String] => String] = Map.empty[String, List[String] => String]
 ) extends Dynamic {
 
   def applyDynamic(name: String)(args: String*): Bob = {
@@ -19,11 +21,21 @@ case class Bob(
   def requireAtLeastOne(value: Set[String]): Bob = copy(requireAtLeastOne = value)
 
   def attributes: Map[String, Any] = {
-    if (!required.subsetOf(inputParams.keys.toSet))
-      throw ModeloBobException(s"You supplied these params [${inputParams.keys}] but all these are required [${required}]")
-    if (requireAtLeastOne.nonEmpty && requireAtLeastOne.intersect(inputParams.keys.toSet).isEmpty)
-      throw ModeloBobException(s"You supplied these params [${inputParams.keys}] but at least one of these are required [${requireAtLeastOne}]")
-    inputParams
+    ParamValidators.requireParams(inputParams, required)
+    ParamValidators.requireAtLeastOne(inputParams, requireAtLeastOne)
+    inputParams.map {
+      case (key, value) =>
+        (key, paramConverters(key)(value))
+    }
+  }
+
+  def render(): String = {
+    mustache(templates, baseTemplateName, attributes)
+  }
+
+  def dataframe: DataFrame = {
+    val spark = SparkSession.getActiveSession.get
+    spark.sql(render())
   }
 
 }
