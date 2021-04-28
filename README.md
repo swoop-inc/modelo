@@ -50,7 +50,27 @@ res.show()
 
 ## Databricks notebook example
 
-Add some pretty pictures with a complicated query to show the power of this design pattern
+Suppose you have the following data table.
+
+```
++----------+--------+
+|first_name| country|
++----------+--------+
+|        li|   china|
+|      luis|colombia|
+|  fernanda|  brasil|
++----------+--------+
+```
+
+Let's look at a query interface that'll let users filter by certain countries (this interface is for less technical users that can't even write SQL code).
+
+![query1](https://github.com/swoop-inc/modelo/blob/main/images/query1.png)
+
+The users just need to update some strings to get different results.  Here's how they can fetch all the Colombians in the dataset.
+
+![query2](https://github.com/swoop-inc/modelo/blob/main/images/query2.png)
+
+This interface is powered by Mustache SQL templates behind the scenes, see the test suite for the entire code snippet.
 
 ## Leveraging a partial
 
