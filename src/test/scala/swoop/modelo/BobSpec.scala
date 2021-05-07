@@ -11,13 +11,13 @@ class BobSpec extends FunSpec with Matchers with SparkSessionTestWrapper with Da
     val someTool = Bob(
       templates = Map("countryFiltered" -> "select * from my_table where country IN {{{countries}}}"),
       baseTemplateName = "countryFiltered",
-      required = Set("whatever", "cool"),
-      paramConverters = Map("whatever" -> ParamConverters.multiMatch, "cool" -> ParamConverters.exactMatch)
+      required = Set("whateverExacts", "coolExact")
     )
     val b = someTool
-      .whatever("aaa", "bbb")
-      .cool("ccc")
-    val expected = Map("whatever" -> "('aaa','bbb')", "cool" -> "'ccc'")
+      .whateverExacts("aaa", "bbb")
+      .coolExact("ccc")
+      .hiExact("hello")
+    val expected = Map("whateverExacts" -> "('aaa','bbb')", "coolExact" -> "'ccc'", "hiExact" -> "'hello'")
     b.attributes should be(expected)
   }
 

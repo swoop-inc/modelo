@@ -25,7 +25,15 @@ case class Bob(
     ParamValidators.requireAtLeastOne(inputParams, requireAtLeastOne)
     inputParams.map {
       case (key, value) =>
-        (key, paramConverters(key)(value))
+        if (key.endsWith("Exact")) {
+          (key, ParamConverters.exactMatch(value))
+        } else if (key.endsWith("Exacts")) {
+          (key, ParamConverters.multiMatch(value))
+        } else if (paramConverters.contains(key)) {
+          (key, paramConverters(key)(value))
+        } else {
+          (key, ParamConverters.exactMatch(value))
+        }
     }
   }
 
