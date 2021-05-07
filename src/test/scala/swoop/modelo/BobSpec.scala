@@ -2,6 +2,8 @@ package swoop.modelo
 
 import com.github.mrpowers.spark.fast.tests.DataFrameComparer
 import org.scalatest.{FunSpec, Matchers}
+import ParamValidators._
+import ParamConverters._
 
 class BobSpec extends FunSpec with Matchers with SparkSessionTestWrapper with DataFrameComparer {
 
@@ -11,7 +13,7 @@ class BobSpec extends FunSpec with Matchers with SparkSessionTestWrapper with Da
     val someTool = Bob(
       templates = Map("countryFiltered" -> "select * from my_table where country IN {{{countries}}}"),
       baseTemplateName = "countryFiltered",
-      required = Set("whateverExacts", "coolExact")
+      inputParamsValidations = List(requireParams(Set("whateverExacts", "coolExact")))
     )
     val b = someTool
       .whateverExacts("aaa", "bbb")
@@ -30,13 +32,12 @@ class BobSpec extends FunSpec with Matchers with SparkSessionTestWrapper with Da
     df.createOrReplaceTempView("my_table")
     // technical users construct someTool
     val someTool = Bob(
-      templates = Map("countryFiltered.mustache" -> "select * from my_table where country IN {{{countries}}}"),
+      templates = Map("countryFiltered.mustache" -> "select * from my_table where country IN {{{countryExacts}}}"),
       baseTemplateName = "countryFiltered.mustache",
-      required = Set("countries"),
-      paramConverters = Map("countries" -> ParamConverters.multiMatch)
+      inputParamsValidations = List(requireParams(Set("countryExacts")))
     )
     // less technical users run queries with this interface
-    val b = someTool.countries("china", "colombia")
+    val b = someTool.countryExacts("china", "colombia")
     val expected = Seq(
       ("li", "china"),
       ("luis", "colombia")
@@ -48,8 +49,8 @@ class BobSpec extends FunSpec with Matchers with SparkSessionTestWrapper with Da
     val someTool = Bob(
       templates = Map("countryFiltered.mustache" -> "select * from my_table where country IN {{{countries}}}"),
       baseTemplateName = "countryFiltered.mustache",
-      required = Set("countries", "cat"),
-      paramConverters = Map("countries" -> ParamConverters.multiMatch, "cat" -> ParamConverters.exactMatch)
+      inputParamsValidations = List(requireParams(Set("countries", "cat"))),
+      paramConverters = Map("countries" -> multiMatch, "cat" -> exactMatch)
     )
     val b = someTool
       .cool("ccc")
@@ -62,8 +63,8 @@ class BobSpec extends FunSpec with Matchers with SparkSessionTestWrapper with Da
     val someTool = Bob(
       templates = Map("countryFiltered.mustache" -> "select * from my_table where country IN {{{countries}}}"),
       baseTemplateName = "countryFiltered.mustache",
-      required = Set("countries"),
-      paramConverters = Map("countries" -> ParamConverters.multiMatch)
+      inputParamsValidations = List(requireParams(Set("countries"))),
+      paramConverters = Map("countries" -> multiMatch)
     )
     val b = someTool
       .whatever("aaa", "bbb")
